@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 // tests the direction and position moving of all actor types 
-int test_actor() {
+void test_actor() {
   for (unsigned int i = 0; i < AT_SIZE; i++) {
     printf("************************ \n");
     printf("Testing actor of type %d! \n", i);
@@ -38,6 +38,4 @@ int test_actor() {
       
     }
   }
-
-  return 0;
 }
