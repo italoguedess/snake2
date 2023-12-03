@@ -1,40 +1,20 @@
 #ifndef ACTOR_H
 #define ACTOR_H
 
-typedef enum { AT_ACTOR, AT_SNAKE, AT_SPEEDYSNAKE, AT_SIZE } ActorType;
-typedef enum {
-  DIRECTION_UP,
-  DIRECTION_RIGHT,
-  DIRECTION_LEFT,
-  DIRECTION_DOWN,
-  DIRECTION_SIZE
-} Direction;
+#include "actor_types_internal.h"
 
-typedef struct position {
-  char x;
-  char y;
-} Position;
+/* actor interface */
 
-typedef struct {
-  Direction direction;
-  Position pos;
-  ActorType type;
-} Actor;
-
-typedef struct {
-  Actor actor;
-  char size;
-} Snake;
-
-typedef struct {
-  Actor actor;
-  char size;
-  char speed;
-} SpeedySnake;
-
-void *actor_create(ActorType t);
-int actor_change_direction(Actor *actor, Direction dir);
-int actor_move(Actor *actor);
-int actor_grow(Actor *actor);
+ActorHandler* actor_create(ActorType t);
+int actor_move(ActorHandler *actor);
+int actor_grow(ActorHandler *actor);
+int actor_set_direction(ActorHandler *actor, Direction dir);
+int actor_get_direction(ActorHandler *actor);
+int actor_set_speed(ActorHandler *actor, char speed);
+int actor_get_speed(ActorHandler *actor);
+int actor_set_size(ActorHandler *actor, int size);
+int actor_get_size(ActorHandler *actor);
+int actor_set_position(ActorHandler *actor, Position pos);
+Position actor_get_position(ActorHandler *actor);
 
 #endif
