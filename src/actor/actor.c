@@ -1,4 +1,5 @@
 #include "actor.h"
+#include "a_types_internal.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,7 +9,7 @@ ActorHandler *actor_create(ActorType t) {
   switch (t) {
   case AT_ACTOR:
     object = malloc(sizeof(Actor));
-    ((Snake *)object)->actor.type = AT_ACTOR;
+    ((Actor *)object)->type = AT_ACTOR;
     break;
   case AT_SNAKE:
     object = malloc(sizeof(Snake));
@@ -28,7 +29,7 @@ ActorHandler *actor_create(ActorType t) {
   return object;
 }
 
-int actor_move(ActorHandler *actor) {
+void actor_move(ActorHandler *actor) {
   // convert to Actor type
   Actor *A_actor = ((Actor *)actor);
 
@@ -45,13 +46,12 @@ int actor_move(ActorHandler *actor) {
   } else if (A_actor->direction == DIRECTION_DOWN) {
     A_actor->pos.y += speed;
   }
-  return 0;
 }
 
-int actor_grow(ActorHandler *actor) {
+void actor_grow(ActorHandler *actor) {
   Actor *A_actor = ((Actor *)actor);
-  // if actor is a SpeedySnake increases its size and returns 0
-  // otherwise returns -1
+  // if actor is a SpeedySnake increases its size
+  // otherwise does nothing
   switch (A_actor->type) {
   case AT_SNAKE:
     ((Snake *)A_actor)->size++;
@@ -60,21 +60,22 @@ int actor_grow(ActorHandler *actor) {
     ((SpeedySnake *)A_actor)->size++;
     break;
   default:
-    return -1;
+    assert("This actor type cannot grow" && 0);
+    break;
   }
-  return 0;
 }
 
-int actor_set_direction(ActorHandler *actor, Direction dir) {
+void actor_destroy(ActorHandler *actor) { free(actor); }
+
+void actor_direction_set(ActorHandler *actor, Direction dir) {
   ((Actor *)actor)->direction = dir;
-  return 0;
 }
 
-int actor_get_direction(ActorHandler *actor) {
+int actor_direction_get(ActorHandler *actor) {
   return ((Actor *)actor)->direction;
 }
 
-int actor_set_speed(ActorHandler *actor, char speed) {
+void actor_speed_set(ActorHandler *actor, char speed) {
   // the speed can't be negative
   assert(speed > 0);
 
@@ -83,21 +84,20 @@ int actor_set_speed(ActorHandler *actor, char speed) {
   if (((Actor *)actor)->type == AT_SPEEDYSNAKE)
     ((SpeedySnake *)actor)->speed = speed;
   else
-    return -1;
+    assert("This actor type does not have a speed attribute" && 0);
 
-  return 0;
 }
 
-int actor_get_speed(ActorHandler *actor) {
+int actor_speed_get(ActorHandler *actor) {
   // if actor is a SpeedySnake returns its speed
   // otherwise returns -1
   if (((Actor *)actor)->type == AT_SPEEDYSNAKE)
     return ((SpeedySnake *)actor)->speed;
   else
-    return -1;
+    assert("This actor type does not have a speed attribute" && 0);
 }
 
-int actor_set_size(ActorHandler *actor, int size) {
+void actor_size_set(ActorHandler *actor, int size) {
   // size can't be negative
   assert(size > 0);
 
@@ -109,33 +109,30 @@ int actor_set_size(ActorHandler *actor, int size) {
   case AT_SPEEDYSNAKE:
     ((SpeedySnake *)actor)->size = size;
   default:
-    return -1;
+    assert("This actor type does not have a size attribute" && 0);
   }
-  return 0;
-  
 }
 
-int actor_get_size(ActorHandler *actor) {
+int actor_size_get(ActorHandler *actor) {
   switch (((Actor *)actor)->type) {
   case AT_SNAKE:
     return ((Snake *)actor)->size;
   case AT_SPEEDYSNAKE:
     return ((SpeedySnake *)actor)->size;
   default:
+    assert("This actor type does not have a size attribute" && 0);
     break;
   }
-  return -1;
 }
 
-int actor_set_position(ActorHandler *actor, Position pos) {
-  assert("In the grid there are no negative positions" && pos.x >= 0 && pos.y >= 0);
+void actor_position_set(ActorHandler *actor, Position pos) {
+  assert("In the grid there are no negative positions" && pos.x >= 0 &&
+         pos.y >= 0);
   ((Actor *)actor)->pos.x = pos.x;
   ((Actor *)actor)->pos.y = pos.y;
-  return 0;
-  
 }
 
-Position actor_get_position(ActorHandler *actor) {
+Position actor_position_get(ActorHandler *actor) {
   Actor *A_actor = (Actor *)actor;
   return (Position){A_actor->pos.x, A_actor->pos.y};
 }

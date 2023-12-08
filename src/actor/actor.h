@@ -1,20 +1,37 @@
 #ifndef ACTOR_H
 #define ACTOR_H
-
-#include "actor_types_internal.h"
+#include "a_types_internal.h"
 
 /* actor interface */
 
-ActorHandler* actor_create(ActorType t);
-int actor_move(ActorHandler *actor);
-int actor_grow(ActorHandler *actor);
-int actor_set_direction(ActorHandler *actor, Direction dir);
-int actor_get_direction(ActorHandler *actor);
-int actor_set_speed(ActorHandler *actor, char speed);
-int actor_get_speed(ActorHandler *actor);
-int actor_set_size(ActorHandler *actor, int size);
-int actor_get_size(ActorHandler *actor);
-int actor_set_position(ActorHandler *actor, Position pos);
-Position actor_get_position(ActorHandler *actor);
+/**
+ * Creates an actor object according to an ActorType
+ */
+ActorHandler *actor_create(ActorType t);
+
+/**
+ * Moves actor if possible, throws an error if not
+ */
+void actor_move(ActorHandler *actor);
+
+/**
+ * Grows actor if possible, throws an error if not
+ */
+void actor_grow(ActorHandler *actor);
+
+/**
+ * Free actor object
+ */
+void actor_destroy(ActorHandler *actor);
+
+/* getters and setters interface */
+void actor_direction_set(ActorHandler *actor, Direction dir);
+int actor_direction_get(ActorHandler *actor);
+void actor_speed_set(ActorHandler *actor, char speed);
+int actor_speed_get(ActorHandler *actor);
+void actor_size_set(ActorHandler *actor, int size);
+int actor_size_get(ActorHandler *actor);
+void actor_position_set(ActorHandler *actor, Position pos);
+Position actor_position_get(ActorHandler *actor);
 
 #endif

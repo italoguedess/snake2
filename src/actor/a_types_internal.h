@@ -10,7 +10,7 @@ typedef enum {
   DIRECTION_COUNT
 } Direction;
 
-typedef struct position {
+typedef struct {
   char x;
   char y;
 } Position;
