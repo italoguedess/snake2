@@ -3,25 +3,31 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 ActorHandler *actor_create(ActorType t) {
   ActorHandler *object = NULL;
   switch (t) {
-  case AT_ACTOR:
+  case AT_ACTOR: {
     object = malloc(sizeof(Actor));
-    ((Actor *)object)->type = AT_ACTOR;
+    Actor temp = {DIRECTION_UP, (Position){0, 0}, AT_ACTOR};
+    memcpy(object, &temp, sizeof(temp));
     break;
-  case AT_SNAKE:
+  }
+
+  case AT_SNAKE: {
     object = malloc(sizeof(Snake));
-    ((Snake *)object)->actor.type = AT_SNAKE;
-    ((Snake *)object)->size = 1;
+    Snake temp = {(Actor){DIRECTION_UP, (Position){0, 0}, AT_SNAKE}, 1};
+    memcpy(object, &temp, sizeof(temp));
     break;
-  case AT_SPEEDYSNAKE:
+  }
+
+  case AT_SPEEDYSNAKE: {
     object = malloc(sizeof(SpeedySnake));
-    ((SpeedySnake *)object)->actor.type = AT_SPEEDYSNAKE;
-    ((SpeedySnake *)object)->size = 1;
-    ((SpeedySnake *)object)->speed = 5;
-    break;
+    SpeedySnake temp = {(Actor){DIRECTION_UP, (Position){0, 0}, AT_SPEEDYSNAKE},
+                        1, 5};
+    memcpy(object, &temp, sizeof(temp));
+  } break;
   default:
     assert("A non defined Actor Type was selected" && 0);
   }
@@ -85,7 +91,6 @@ void actor_speed_set(ActorHandler *actor, char speed) {
     ((SpeedySnake *)actor)->speed = speed;
   else
     assert("This actor type does not have a speed attribute" && 0);
-
 }
 
 int actor_speed_get(ActorHandler *actor) {

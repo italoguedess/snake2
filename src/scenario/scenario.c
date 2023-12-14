@@ -1,14 +1,16 @@
 #include "scenario.h"
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 ScenarioHandler *scenario_create(ScenarioType t) {
   void *object = NULL;
   switch (t) {
   case ST_SCENARIO:
     object = malloc(sizeof(Scenario));
-    ((Scenario *)object)->type = ST_SCENARIO;
-    ((Scenario *)object)->bounds = (Bounds){255, 255};
+    Scenario temp = {(Position){255, 255}, ST_SCENARIO};
+    memcpy(object, &temp, sizeof(temp));
+    break;
   default:
     assert("Invalid Scenario type" && 0);
   }
@@ -27,6 +29,4 @@ int scenario_check_bounds(ScenarioHandler *scenario, Position pos) {
   return 0;
 }
 
-void scenario_destroy(ScenarioHandler *scenario) {
-  free(scenario);
-}
+void scenario_destroy(ScenarioHandler *scenario) { free(scenario); }

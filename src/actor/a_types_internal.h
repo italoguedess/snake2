@@ -11,14 +11,14 @@ typedef enum {
 } Direction;
 
 typedef struct {
-  char x;
-  char y;
+  unsigned char x;
+  unsigned char y;
 } Position;
 
 typedef struct {
   Direction direction;
   Position pos;
-  ActorType type;
+  const ActorType type;
 } Actor;
 
 typedef struct {

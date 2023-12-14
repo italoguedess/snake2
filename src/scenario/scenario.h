@@ -1,23 +1,16 @@
 #ifndef SCENARIO_H
 #define SCENARIO_H
 
+#include "../actor/actor.h"
+
 typedef enum { ST_SCENARIO, ST_COUNT } ScenarioType;
 
 typedef struct {
-  char x;
-  char y;
-} Bounds;
-
-// This is valid since Bounds and Position are modeled the same way
-typedef Bounds Position;
-
-typedef struct {
-  Bounds bounds;
-  ScenarioType type;
+  const Position bounds;
+  const ScenarioType type;
 } Scenario;
 
 typedef void ScenarioHandler;
-typedef void ActorHandler;
 
 /**
  * Creates a scenario object according to a ScenarioType
