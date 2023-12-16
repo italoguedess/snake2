@@ -4,9 +4,7 @@
 #include <stdio.h>
 
 int main(int argc, char *argv[]) {
-  void* game = game_create(GT_GAME);
+  void* game = game_create(GT_DEBUG);
   game_loop(game);
-  test_actor();
-  
   return 0;
 }

@@ -10,22 +10,22 @@ ActorHandler *actor_create(ActorType t) {
   switch (t) {
   case AT_ACTOR: {
     object = malloc(sizeof(Actor));
-    Actor temp = {DIRECTION_UP, (Position){0, 0}, AT_ACTOR};
+    Actor temp = {DIRECTION_RIGHT, (Position){0, 0}, AT_ACTOR};
     memcpy(object, &temp, sizeof(temp));
     break;
   }
 
   case AT_SNAKE: {
     object = malloc(sizeof(Snake));
-    Snake temp = {(Actor){DIRECTION_UP, (Position){0, 0}, AT_SNAKE}, 1};
+    Snake temp = {(Actor){DIRECTION_RIGHT, (Position){0, 0}, AT_SNAKE}, 1};
     memcpy(object, &temp, sizeof(temp));
     break;
   }
 
   case AT_SPEEDYSNAKE: {
     object = malloc(sizeof(SpeedySnake));
-    SpeedySnake temp = {(Actor){DIRECTION_UP, (Position){0, 0}, AT_SPEEDYSNAKE},
-                        1, 5};
+    SpeedySnake temp = {
+        (Actor){DIRECTION_RIGHT, (Position){0, 0}, AT_SPEEDYSNAKE}, 1, 5};
     memcpy(object, &temp, sizeof(temp));
   } break;
   default:
@@ -36,39 +36,27 @@ ActorHandler *actor_create(ActorType t) {
 }
 
 void actor_move(ActorHandler *actor) {
-  // convert to Actor type
-  Actor *A_actor = ((Actor *)actor);
 
-  // setting the actor speed
-  char speed =
-      (A_actor->type == AT_SPEEDYSNAKE) ? ((SpeedySnake *)actor)->speed : 1;
-
-  if (A_actor->direction == DIRECTION_UP) {
-    A_actor->pos.y += speed;
-  } else if (A_actor->direction == DIRECTION_RIGHT) {
-    A_actor->pos.x += speed;
-  } else if (A_actor->direction == DIRECTION_LEFT) {
-    A_actor->pos.x += speed;
-  } else if (A_actor->direction == DIRECTION_DOWN) {
-    A_actor->pos.y += speed;
+  Position temp = actor_position_get(actor);
+  switch (actor_direction_get(actor)) {
+  case DIRECTION_UP:
+    temp.y += actor_speed_get(actor);
+    break;
+  case DIRECTION_DOWN:
+    temp.y -= actor_speed_get(actor);
+    break;
+  case DIRECTION_LEFT:
+    temp.x -= actor_speed_get(actor);
+    break;
+  case DIRECTION_RIGHT:
+    temp.x += actor_speed_get(actor);
   }
+
+  actor_position_set(actor, temp);
 }
 
 void actor_grow(ActorHandler *actor) {
-  Actor *A_actor = ((Actor *)actor);
-  // if actor is a SpeedySnake increases its size
-  // otherwise does nothing
-  switch (A_actor->type) {
-  case AT_SNAKE:
-    ((Snake *)A_actor)->size++;
-    break;
-  case AT_SPEEDYSNAKE:
-    ((SpeedySnake *)A_actor)->size++;
-    break;
-  default:
-    assert("This actor type cannot grow" && 0);
-    break;
-  }
+  actor_size_set(actor, actor_size_get(actor) + 1);
 }
 
 void actor_destroy(ActorHandler *actor) { free(actor); }
@@ -95,11 +83,11 @@ void actor_speed_set(ActorHandler *actor, char speed) {
 
 int actor_speed_get(ActorHandler *actor) {
   // if actor is a SpeedySnake returns its speed
-  // otherwise returns -1
+  // otherwise returns 1
   if (((Actor *)actor)->type == AT_SPEEDYSNAKE)
     return ((SpeedySnake *)actor)->speed;
   else
-    assert("This actor type does not have a speed attribute" && 0);
+    return 1;
 }
 
 void actor_size_set(ActorHandler *actor, int size) {

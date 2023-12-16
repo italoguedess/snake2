@@ -1,31 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 
-typedef void ActorHandler;
-typedef void ScenarioHandler;
-typedef void MenuHandler;
-typedef void GameHandler;
-
-typedef enum { GT_GAME, GT_COUNT } GameType;
-typedef enum { GS_PAUSED, GS_PLAYING, GS_COUNT } GameState;
-typedef enum {
-  GSC_LOGO,
-  GSC_TITLE,
-  GSC_GAMEPLAY,
-  GSC_ENDING,
-  GSC_COUNT
-} GameScreen;
-
-typedef struct {
-  ActorHandler *Actor;
-  ScenarioHandler *Scenario;
-  MenuHandler *Menu;
-  GameState state;
-  GameScreen screen;
-} Game;
+#include "g_types_internal.h"
 
 /**
- * Creates a game object according to an GameType
+ * Creates a game object according to a GameType
  */
 GameHandler *game_create(GameType t);
 
@@ -34,8 +13,19 @@ void game_pause(GameHandler *game);
 void game_loop(GameHandler *game);
 
 /**
- * Free actor object
+ * Free game object
  */
 void game_destroy(GameHandler *game);
+
+ActorHandler *game_actor_get();
+void game_actor_set();
+ScenarioHandler *game_scenario_get();
+void game_scenario_set();
+MenuHandler *game_menu_get();
+void game_menu_set();
+GameState game_state_get();
+void game_state_set();
+GameScreen game_screen_get();
+void game_screen_set();
 
 #endif

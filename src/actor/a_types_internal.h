@@ -1,5 +1,5 @@
-#ifndef ACTORTYPESINTERNAL_H
-#define ACTORTYPESINTERNAL_H
+#ifndef ATYPESINTERNAL_H
+#define ATYPESINTERNAL_H
 
 typedef enum { AT_ACTOR, AT_SNAKE, AT_SPEEDYSNAKE, AT_COUNT } ActorType;
 typedef enum {
@@ -11,8 +11,8 @@ typedef enum {
 } Direction;
 
 typedef struct {
-  unsigned char x;
-  unsigned char y;
+  unsigned int x;
+  unsigned int y;
 } Position;
 
 typedef struct {
@@ -29,7 +29,7 @@ typedef struct {
 typedef struct {
   Actor actor;
   char size;
-  char speed;
+  float speed;
 } SpeedySnake;
 
 typedef void ActorHandler;

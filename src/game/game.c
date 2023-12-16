@@ -1,4 +1,7 @@
 #include "game.h"
+#include "../actor/actor.h"
+#include "../scenario/scenario.h"
+#include "g_types_internal.h"
 #include "raylib.h"
 #include <assert.h>
 #include <stdlib.h>
@@ -6,9 +9,13 @@
 GameHandler *game_create(GameType t) {
   void *object = NULL;
   switch (t) {
-  case GT_GAME:
+  case GT_DEBUG:
     object = malloc(sizeof(Game));
-    ((Game *)object)->state = GS_PAUSED;
+    Game *game = (Game *)object;
+    game->actor = actor_create(AT_ACTOR);
+    game->scenario = scenario_create(ST_SCENARIO);
+    game->state = GS_PLAYING;
+    game->screen = GSC_LOGO;
     break;
   default:
     assert("This game type does not exist" && 0);
@@ -21,8 +28,6 @@ void game_start(GameHandler *game) { ((Game *)game)->state = GS_PLAYING; }
 void game_pause(GameHandler *game) { ((Game *)game)->state = GS_PAUSED; }
 
 void game_loop(GameHandler *game) {
-  // Initialization
-  //--------------------------------------------------------------------------------------
   const int screenWidth = 800;
   const int screenHeight = 450;
 
@@ -31,19 +36,16 @@ void game_loop(GameHandler *game) {
 
   GameScreen currentScreen = GSC_LOGO;
 
-  // TODO: Initialize all required variables and load all required data here!
-
   int framesCounter = 0; // Useful to count frames
 
   SetTargetFPS(60); // Set desired framerate (frames-per-second)
-  //--------------------------------------------------------------------------------------
 
   // Main game loop
   while (!WindowShouldClose()) // Detect window close button or ESC key
   {
     // Update
     //----------------------------------------------------------------------------------
-    switch (currentScreen) {
+    switch (currentScreen ){
     case GSC_LOGO: {
       // TODO: Update LOGO screen variables here!
 
@@ -65,6 +67,21 @@ void game_loop(GameHandler *game) {
     case GSC_GAMEPLAY: {
       // TODO: Update GAMEPLAY screen variables here!
 
+      // Checking for key press
+      if (IsKeyDown(KEY_A)) {
+        actor_direction_set(((Game *)game)->actor, DIRECTION_LEFT);
+      } else if (IsKeyDown(KEY_D)) {
+        actor_direction_set(((Game *)game)->actor, DIRECTION_RIGHT);
+      } else if (IsKeyDown(KEY_W)) {
+        actor_direction_set(((Game *)game)->actor, DIRECTION_UP);
+      } else if (IsKeyDown(KEY_S)){
+        actor_direction_set(((Game *)game)->actor, DIRECTION_DOWN);
+      } else if (IsKeyDown(KEY_SPACE)){
+	game_pause(game);
+      }
+
+      actor_move(((Game *)game)->actor);
+
       // Press enter to change to ENDING screen
       if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP)) {
         currentScreen = GSC_ENDING;
@@ -81,10 +98,7 @@ void game_loop(GameHandler *game) {
     default:
       break;
     }
-    //----------------------------------------------------------------------------------
 
-    // Draw
-    //----------------------------------------------------------------------------------
     BeginDrawing();
 
     ClearBackground(RAYWHITE);
@@ -106,10 +120,11 @@ void game_loop(GameHandler *game) {
     } break;
     case GSC_GAMEPLAY: {
       // TODO: Draw GSC_GAMEPLAY screen here!
+      // Draw the scenario
       DrawRectangle(0, 0, screenWidth, screenHeight, PURPLE);
-      DrawText("GAMEPLAY SCREEN", 20, 20, 40, MAROON);
-      DrawText("PRESS ENTER or TAP to JUMP to ENDING SCREEN", 130, 220, 20,
-               MAROON);
+      // Draw the actor
+      DrawRectangle(actor_position_get(((Game *)game)->actor).x,
+                    -actor_position_get(((Game *)game)->actor).y, 40, 40, RED);
 
     } break;
     case GSC_ENDING: {
