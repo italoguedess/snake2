@@ -8,7 +8,7 @@ ScenarioHandler *scenario_create(ScenarioType t) {
   switch (t) {
   case ST_SCENARIO:
     object = malloc(sizeof(Scenario));
-    Scenario temp = {(Position){255, 255}, ST_SCENARIO};
+    Scenario temp = {(Position){800, 450}, ST_SCENARIO};
     memcpy(object, &temp, sizeof(temp));
     break;
   default:
@@ -30,3 +30,7 @@ int scenario_check_bounds(ScenarioHandler *scenario, Position pos) {
 }
 
 void scenario_destroy(ScenarioHandler *scenario) { free(scenario); }
+
+Position scenario_bounds_get(ScenarioHandler *scenario) {
+  return ((Scenario *)scenario)->bounds;
+}

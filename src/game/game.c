@@ -4,7 +4,9 @@
 #include "g_types_internal.h"
 #include "raylib.h"
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 GameHandler *game_create(GameType t) {
   void *object = NULL;
@@ -28,8 +30,8 @@ void game_start(GameHandler *game) { ((Game *)game)->state = GS_PLAYING; }
 void game_pause(GameHandler *game) { ((Game *)game)->state = GS_PAUSED; }
 
 void game_loop(GameHandler *game) {
-  const int screenWidth = 800;
-  const int screenHeight = 450;
+  const int screenWidth = scenario_bounds_get(game_scenario_get(game)).x;
+  const int screenHeight = scenario_bounds_get(game_scenario_get(game)).y;
 
   InitWindow(screenWidth, screenHeight,
              "raylib [core] example - basic screen manager");
@@ -45,7 +47,7 @@ void game_loop(GameHandler *game) {
   {
     // Update
     //----------------------------------------------------------------------------------
-    switch (currentScreen ){
+    switch (game_screen_get(game)) {
     case GSC_LOGO: {
       // TODO: Update LOGO screen variables here!
 
@@ -53,7 +55,7 @@ void game_loop(GameHandler *game) {
 
       // Wait for 2 seconds (120 frames) before jumping to TITLE screen
       if (framesCounter > 120) {
-        currentScreen = GSC_TITLE;
+        game_screen_set(game, GSC_TITLE);
       }
     } break;
     case GSC_TITLE: {
@@ -61,7 +63,7 @@ void game_loop(GameHandler *game) {
 
       // Press enter to change to GAMEPLAY screen
       if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP)) {
-        currentScreen = GSC_GAMEPLAY;
+        game_screen_set(game, GSC_GAMEPLAY);
       }
     } break;
     case GSC_GAMEPLAY: {
@@ -74,17 +76,18 @@ void game_loop(GameHandler *game) {
         actor_direction_set(((Game *)game)->actor, DIRECTION_RIGHT);
       } else if (IsKeyDown(KEY_W)) {
         actor_direction_set(((Game *)game)->actor, DIRECTION_UP);
-      } else if (IsKeyDown(KEY_S)){
+      } else if (IsKeyDown(KEY_S)) {
         actor_direction_set(((Game *)game)->actor, DIRECTION_DOWN);
-      } else if (IsKeyDown(KEY_SPACE)){
-	game_pause(game);
+      } else if (IsKeyDown(KEY_SPACE)) {
+        game_pause(game);
       }
 
       actor_move(((Game *)game)->actor);
 
       // Press enter to change to ENDING screen
       if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP)) {
-        currentScreen = GSC_ENDING;
+	printf("Game Screen: %d \n", game_screen_get(game));
+        game_screen_set(game, GSC_ENDING);
       }
     } break;
     case GSC_ENDING: {
@@ -92,7 +95,7 @@ void game_loop(GameHandler *game) {
 
       // Press enter to return to TITLE screen
       if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP)) {
-        currentScreen = GSC_TITLE;
+        game_screen_set(game, GSC_TITLE);
       }
     } break;
     default:
@@ -103,7 +106,7 @@ void game_loop(GameHandler *game) {
 
     ClearBackground(RAYWHITE);
 
-    switch (currentScreen) {
+    switch (game_screen_get(game)) {
     case GSC_LOGO: {
       // TODO: Draw GSC_LOGO screen here!
       DrawText("LOGO SCREEN", 20, 20, 40, LIGHTGRAY);
@@ -153,3 +156,38 @@ void game_loop(GameHandler *game) {
 }
 
 void game_destroy(GameHandler *game) { free(game); }
+
+ActorHandler *game_actor_get(ActorHandler *game) {
+  return ((Game *)game)->actor;
+}
+
+void game_actor_set(GameHandler *game, ActorHandler *actor) {
+  memcpy(((Game *)game)->actor, actor, sizeof(actor));
+}
+
+ScenarioHandler *game_scenario_get(GameHandler *game) {
+  return ((Game *)game)->scenario;
+}
+
+void game_scenario_set(GameHandler *game, ScenarioHandler *scenario) {
+  memcpy(((Game *)game)->scenario, scenario, sizeof(scenario));
+}
+
+MenuHandler *game_menu_get(GameHandler *game) {
+  return ((Game *)game)->scenario;
+}
+
+void game_menu_set(GameHandler *game, MenuHandler *menu) {
+  memcpy(((Game *)game)->menu, menu, sizeof(menu));
+}
+
+GameState game_state_get(GameHandler *game) { return ((Game *)game)->state; }
+void game_state_set(GameHandler *game, GameState gs) {
+  ((Game *)game)->state = gs;
+}
+
+GameScreen game_screen_get(GameHandler *game) { return ((Game *)game)->screen; }
+
+void game_screen_set(GameHandler *game, GameScreen gsc) {
+  ((Game *)game)->screen = gsc;
+}

@@ -17,15 +17,15 @@ void game_loop(GameHandler *game);
  */
 void game_destroy(GameHandler *game);
 
-ActorHandler *game_actor_get();
-void game_actor_set();
-ScenarioHandler *game_scenario_get();
-void game_scenario_set();
-MenuHandler *game_menu_get();
-void game_menu_set();
-GameState game_state_get();
-void game_state_set();
-GameScreen game_screen_get();
-void game_screen_set();
+ActorHandler *game_actor_get(GameHandler *game);
+void game_actor_set(GameHandler *game, ActorHandler* actor);
+ScenarioHandler *game_scenario_get(GameHandler *game);
+void game_scenario_set(GameHandler *game, ScenarioHandler* scenario);
+MenuHandler *game_menu_get(GameHandler *game);
+void game_menu_set(GameHandler *game, MenuHandler *menu);
+GameState game_state_get(GameHandler *game);
+void game_state_set(GameHandler *game, GameState gs);
+GameScreen game_screen_get(GameHandler *game);
+void game_screen_set(GameHandler *game, GameScreen gsc);
 
 #endif

@@ -29,4 +29,6 @@ int scenario_check_bounds(ScenarioHandler *scenario, Position pos);
  */
 void scenario_destroy(ScenarioHandler *scenario);
 
+Position scenario_bounds_get(ScenarioHandler *scenario);
+
 #endif
