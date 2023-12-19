@@ -27,7 +27,9 @@ ActorHandler *actor_create(ActorType t) {
     SpeedySnake temp = {
         (Actor){DIRECTION_RIGHT, (Position){0, 0}, AT_SPEEDYSNAKE}, 1, 5};
     memcpy(object, &temp, sizeof(temp));
-  } break;
+    break;
+  }
+
   default:
     assert("A non defined Actor Type was selected" && 0);
   }

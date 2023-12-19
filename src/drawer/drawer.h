@@ -2,11 +2,12 @@
 #define DRAWER_H
 
 #include <raylib.h>
+#include <stddef.h>
 
 typedef enum {
   DT_DRAWER,
   DT_COUNT
-  
+
 } DrawerType;
 
 typedef struct {
@@ -22,15 +23,17 @@ typedef void ActorHandler;
 typedef void ScenarioHandler;
 
 DrawerHandler *drawer_create(DrawerType t);
-void drawer_draw_logo(DrawerHandler *drawer, int screen_width, int screen_length);
-void drawer_draw_title(DrawerHandler *drawer);
+void drawer_draw_logo(DrawerHandler *drawer, size_t screen_width,
+                      size_t screen_length);
+void drawer_draw_title(DrawerHandler *drawer, bool hover, size_t screen_width,
+                       size_t screen_height);
 void drawer_draw_actor(DrawerHandler *drawer, ActorHandler *actor);
 void drawer_draw_scenario(DrawerHandler *drawer, ScenarioHandler *scenario);
 void drawer_draw_end(DrawerHandler *drawer);
 void drawer_destroy(DrawerHandler *drawer);
 
-Font drawer_font_get(DrawerHandler* drawer);
-void drawer_font_set(DrawerHandler* drawer, Font f);
+Font drawer_font_get(DrawerHandler *drawer);
+void drawer_font_set(DrawerHandler *drawer, Font f);
 unsigned int drawer_font_size_get(DrawerHandler *drawer);
 void drawer_font_size_set(DrawerHandler *drawer, unsigned int size);
 unsigned int drawer_font_size_header_get(DrawerHandler *drawer);

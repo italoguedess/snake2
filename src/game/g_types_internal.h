@@ -6,22 +6,25 @@ typedef void ScenarioHandler;
 typedef void DrawerHandler;
 typedef void GameHandler;
 
-typedef enum { GT_DEBUG, GT_COUNT } GameType;
+typedef enum { GT_GAME, GT_COUNT } GameType;
 typedef enum { GS_PAUSED, GS_PLAYING, GS_COUNT } GameState;
 typedef enum {
-  GSC_LOGO,
-  GSC_TITLE,
-  GSC_GAMEPLAY,
-  GSC_ENDING,
-  GSC_COUNT
-} GameScreen;
+  GST_LOGO,
+  GST_TITLE,
+  GST_GAMEPLAY,
+  GST_ENDING,
+  GST_COUNT
+} GameScreenType;
 
 typedef struct {
+  unsigned int screen_width;
+  unsigned int screen_height;
+  GameState state;
+  GameScreenType screen;
   ActorHandler *actor;
   ScenarioHandler *scenario;
   DrawerHandler *drawer;
-  GameState state;
-  GameScreen screen;
+  GameType type;
 } Game;
 
 #endif

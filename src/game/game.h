@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "g_types_internal.h"
+#include <stddef.h>
 
 /**
  * Creates a game object according to a GameType
@@ -24,7 +25,11 @@ DrawerHandler *game_drawer_get(GameHandler *game);
 void game_drawer_set(GameHandler *game, DrawerHandler *drawer);
 GameState game_state_get(GameHandler *game);
 void game_state_set(GameHandler *game, GameState gs);
-GameScreen game_screen_get(GameHandler *game);
-void game_screen_set(GameHandler *game, GameScreen gsc);
+GameScreenType game_screen_type_get(GameHandler *game);
+void game_screen_type_set(GameHandler *game, GameScreenType gst);
+size_t game_screen_width_get(GameHandler *game);
+void game_screen_width_set(GameHandler *game, size_t size);
+size_t game_screen_height_get(GameHandler *game);
+void game_screen_height_set(GameHandler *game, size_t size);
 
 #endif
