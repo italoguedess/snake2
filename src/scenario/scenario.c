@@ -18,11 +18,10 @@ ScenarioHandler *scenario_create(ScenarioType t) {
   return object;
 }
 
-int scenario_check_bounds(ScenarioHandler *scenario, Position pos) {
-  // if the given position is greater than bounds or lesser than 0
-  // returns -1, otherwise returns 0
+int scenario_bounds_check(ScenarioHandler *scenario, Position pos) {
+  // Checks bounds accordingly to raylib positioning
   if ((pos.x > ((Scenario *)scenario)->bounds.x || pos.x < 0) ||
-      (pos.y > ((Scenario *)scenario)->bounds.x || pos.y < 0)) {
+      (pos.y < -((Scenario *)scenario)->bounds.y || pos.y > 0)) {
     return -1;
   }
 

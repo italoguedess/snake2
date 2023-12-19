@@ -18,7 +18,7 @@ void test_scenario() {
            ((Scenario *)scenario)->bounds.x, ((Scenario *)scenario)->bounds.y);
 
     printf("Results in: %d \n",
-           scenario_check_bounds(scenario,
+           scenario_bounds_check(scenario,
                                  (Position){((Scenario *)scenario)->bounds.x,
                                             ((Scenario *)scenario)->bounds.y}));
 
@@ -27,7 +27,7 @@ void test_scenario() {
            ((Scenario *)scenario)->bounds.y + 1);
 
     printf("Results in: %d \n",
-           scenario_check_bounds(
+           scenario_bounds_check(
                scenario, (Position){((Scenario *)scenario)->bounds.x + 1,
                                     ((Scenario *)scenario)->bounds.y + 1}));
 

@@ -1,6 +1,7 @@
 #include "game.h"
 #include "../actor/actor.h"
 #include "../scenario/scenario.h"
+#include "../drawer/drawer.h"
 #include "g_types_internal.h"
 #include "raylib.h"
 #include <assert.h>
@@ -16,6 +17,7 @@ GameHandler *game_create(GameType t) {
     Game *game = (Game *)object;
     game->actor = actor_create(AT_ACTOR);
     game->scenario = scenario_create(ST_SCENARIO);
+    game->drawer = drawer_create(DT_DRAWER);
     game->state = GS_PLAYING;
     game->screen = GSC_LOGO;
     break;
@@ -25,9 +27,9 @@ GameHandler *game_create(GameType t) {
   return object;
 }
 
-void game_start(GameHandler *game) { ((Game *)game)->state = GS_PLAYING; }
-
-void game_pause(GameHandler *game) { ((Game *)game)->state = GS_PAUSED; }
+void game_state_toggle(GameHandler *game) {
+  game_state_set(game, ~game_state_get(game));
+}
 
 void game_loop(GameHandler *game) {
   const int screenWidth = scenario_bounds_get(game_scenario_get(game)).x;
@@ -54,7 +56,7 @@ void game_loop(GameHandler *game) {
       framesCounter++; // Count frames
 
       // Wait for 2 seconds (120 frames) before jumping to TITLE screen
-      if (framesCounter > 120) {
+      if (framesCounter > 180) {
         game_screen_set(game, GSC_TITLE);
       }
     } break;
@@ -67,9 +69,7 @@ void game_loop(GameHandler *game) {
       }
     } break;
     case GSC_GAMEPLAY: {
-      // TODO: Update GAMEPLAY screen variables here!
-
-      // Checking for key press
+      // Checking for key presses
       if (IsKeyDown(KEY_A)) {
         actor_direction_set(((Game *)game)->actor, DIRECTION_LEFT);
       } else if (IsKeyDown(KEY_D)) {
@@ -79,14 +79,25 @@ void game_loop(GameHandler *game) {
       } else if (IsKeyDown(KEY_S)) {
         actor_direction_set(((Game *)game)->actor, DIRECTION_DOWN);
       } else if (IsKeyDown(KEY_SPACE)) {
-        game_pause(game);
+        game_state_toggle(game);
       }
 
-      actor_move(((Game *)game)->actor);
+      if (game_state_get(game) == GS_PLAYING) {
+        actor_move(game_actor_get(game));
+      }
+
+      if (scenario_bounds_check(game_scenario_get(game),
+                                actor_position_get(game_actor_get(game))) ==
+          -1) {
+        // end screen and actor resetting
+        game_screen_set(game, GSC_ENDING);
+        actor_position_set(game_actor_get(game), (Position){0, 0});
+        actor_direction_set(game_actor_get(game), DIRECTION_RIGHT);
+      }
 
       // Press enter to change to ENDING screen
       if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP)) {
-	printf("Game Screen: %d \n", game_screen_get(game));
+        printf("Game Screen: %d \n", game_screen_get(game));
         game_screen_set(game, GSC_ENDING);
       }
     } break;
@@ -104,13 +115,11 @@ void game_loop(GameHandler *game) {
 
     BeginDrawing();
 
-    ClearBackground(RAYWHITE);
 
     switch (game_screen_get(game)) {
     case GSC_LOGO: {
       // TODO: Draw GSC_LOGO screen here!
-      DrawText("LOGO SCREEN", 20, 20, 40, LIGHTGRAY);
-      DrawText("WAIT for 2 SECONDS...", 290, 220, 20, GRAY);
+      drawer_draw_logo(game_drawer_get(game), screenWidth, screenHeight);
 
     } break;
     case GSC_TITLE: {
@@ -124,18 +133,20 @@ void game_loop(GameHandler *game) {
     case GSC_GAMEPLAY: {
       // TODO: Draw GSC_GAMEPLAY screen here!
       // Draw the scenario
-      DrawRectangle(0, 0, screenWidth, screenHeight, PURPLE);
+      DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
       // Draw the actor
-      DrawRectangle(actor_position_get(((Game *)game)->actor).x,
-                    -actor_position_get(((Game *)game)->actor).y, 40, 40, RED);
+      DrawRectangle(actor_position_get(game_actor_get(game)).x,
+                    -actor_position_get(game_actor_get(game)).y, 40, 40, DARKGREEN);
 
     } break;
     case GSC_ENDING: {
       // TODO: Draw GSC_ENDING screen here!
-      DrawRectangle(0, 0, screenWidth, screenHeight, BLUE);
-      DrawText("ENDING SCREEN", 20, 20, 40, DARKBLUE);
+      Vector2 f = MeasureTextEx(GetFontDefault(), "Game Over", 40, 1);
+      DrawRectangle(0, 0, screenWidth, screenHeight, RED);
+      DrawText("Game Over", (float)screenWidth / 2 - f.x / 2,
+               (float)screenHeight / 2 - f.y, 40, BLACK);
       DrawText("PRESS ENTER or TAP to RETURN to TITLE SCREEN", 120, 220, 20,
-               DARKBLUE);
+               BLACK);
 
     } break;
     default:
@@ -155,7 +166,11 @@ void game_loop(GameHandler *game) {
   //--------------------------------------------------------------------------------------
 }
 
-void game_destroy(GameHandler *game) { free(game); }
+void game_destroy(GameHandler *game) {
+  free(game_actor_get(game));
+  free(game_scenario_get(game));
+  free(game);
+}
 
 ActorHandler *game_actor_get(ActorHandler *game) {
   return ((Game *)game)->actor;
@@ -173,12 +188,12 @@ void game_scenario_set(GameHandler *game, ScenarioHandler *scenario) {
   memcpy(((Game *)game)->scenario, scenario, sizeof(scenario));
 }
 
-MenuHandler *game_menu_get(GameHandler *game) {
-  return ((Game *)game)->scenario;
+DrawerHandler *game_drawer_get(GameHandler *game) {
+  return ((Game *)game)->drawer;
 }
 
-void game_menu_set(GameHandler *game, MenuHandler *menu) {
-  memcpy(((Game *)game)->menu, menu, sizeof(menu));
+void game_drawer_set(GameHandler *game, DrawerHandler *drawer) {
+  memcpy(((Game *)game)->drawer, drawer, sizeof(drawer));
 }
 
 GameState game_state_get(GameHandler *game) { return ((Game *)game)->state; }

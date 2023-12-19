@@ -22,7 +22,7 @@ ScenarioHandler *scenario_create(ScenarioType t);
  *
  * @return 0 if true -1 if false
  */
-int scenario_check_bounds(ScenarioHandler *scenario, Position pos);
+int scenario_bounds_check(ScenarioHandler *scenario, Position pos);
 
 /**
  * Free Scenario object memory

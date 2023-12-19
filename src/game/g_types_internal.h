@@ -3,7 +3,7 @@
 
 typedef void ActorHandler;
 typedef void ScenarioHandler;
-typedef void MenuHandler;
+typedef void DrawerHandler;
 typedef void GameHandler;
 
 typedef enum { GT_DEBUG, GT_COUNT } GameType;
@@ -19,7 +19,7 @@ typedef enum {
 typedef struct {
   ActorHandler *actor;
   ScenarioHandler *scenario;
-  MenuHandler *menu;
+  DrawerHandler *drawer;
   GameState state;
   GameScreen screen;
 } Game;

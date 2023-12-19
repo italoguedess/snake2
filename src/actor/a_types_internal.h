@@ -11,8 +11,8 @@ typedef enum {
 } Direction;
 
 typedef struct {
-  unsigned int x;
-  unsigned int y;
+  int x;
+  int y;
 } Position;
 
 typedef struct {

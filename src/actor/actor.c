@@ -119,8 +119,6 @@ int actor_size_get(ActorHandler *actor) {
 }
 
 void actor_position_set(ActorHandler *actor, Position pos) {
-  assert("In the grid there are no negative positions" && pos.x >= 0 &&
-         pos.y >= 0);
   ((Actor *)actor)->pos.x = pos.x;
   ((Actor *)actor)->pos.y = pos.y;
 }
