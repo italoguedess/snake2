@@ -1,0 +1,13 @@
+cflags = -Wall -g -lcriterion -lraylib
+
+actor_s = src/actor/actor.c
+test_s = src/tests/t_actor.c src/tests/t_scenario.c src/tests/t_drawer.c
+scenario_s = src/scenario/scenario.c
+game_s = src/game/game.c
+drawer_s = src/drawer/drawer.c
+sources = 
+
+rule cc
+  command = gcc $cflags -o $out $in
+
+build main: cc src/main.c src/actor/actor.c src/tests/t_actor.c src/tests/t_scenario.c src/tests/t_drawer.c src/scenario/scenario.c src/game/game.c src/drawer/drawer.c

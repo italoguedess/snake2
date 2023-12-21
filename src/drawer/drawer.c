@@ -36,7 +36,7 @@ void drawer_draw_logo(DrawerHandler *drawer, size_t screen_width,
                                screen_width, screen_height);
 }
 
-void drawer_draw_title(DrawerHandler *drawer, bool hover, size_t screen_width,
+void drawer_draw_title(DrawerHandler *drawer, int hover, size_t screen_width,
                        size_t screen_height) {
   const int num_menu_rects = 2;
   const char *buttons_text[] = {"Start Game", "Credits"};
@@ -45,8 +45,9 @@ void drawer_draw_title(DrawerHandler *drawer, bool hover, size_t screen_width,
   // Draw buttons
   for (int i = 0; i < num_menu_rects; i++) {
     drawer_draw_button_centralized(buttons_text[i],
-                                   drawer_font_size_get(drawer), hover, 0,
-                                   50 * (i + 1), screen_width, screen_height);
+                                   drawer_font_size_get(drawer),
+                                   (i == hover) ? true : false, 0, 50 * (i + 1),
+                                   screen_width, screen_height);
   }
 }
 

@@ -25,7 +25,7 @@ typedef void ScenarioHandler;
 DrawerHandler *drawer_create(DrawerType t);
 void drawer_draw_logo(DrawerHandler *drawer, size_t screen_width,
                       size_t screen_length);
-void drawer_draw_title(DrawerHandler *drawer, bool hover, size_t screen_width,
+void drawer_draw_title(DrawerHandler *drawer, int hover, size_t screen_width,
                        size_t screen_height);
 void drawer_draw_actor(DrawerHandler *drawer, ActorHandler *actor);
 void drawer_draw_scenario(DrawerHandler *drawer, ScenarioHandler *scenario);
